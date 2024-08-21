@@ -1,0 +1,15 @@
+syntax = "proto3";
+option java_package = "com.develop.local.proto";
+option java_multiple_files = true;
+
+message UserFilterPreferences{
+
+    SortOrder sort_order = 1;
+    repeated string sources = 2;
+
+    enum SortOrder {
+            RELEVANCY = 0;
+            POPULARITY = 1;
+            PUBLISHED_AT = 2;
+        }
+}

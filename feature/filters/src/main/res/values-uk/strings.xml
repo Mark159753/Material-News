@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="filter_screen_toolbar">Фільтр</string>
+    <string name="filter_screen_sort_order_title">Порядок сортування</string>
+
+    <string name="filter_screen_sort_by_popularity">Популярністю</string>
+    <string name="filter_screen_sort_by_relevancy">Актуальністю</string>
+    <string name="filter_screen_sort_by_published_at">Публікацією</string>
+
+    <string name="filter_screen_sort_lng">Мова: %1$s</string>
+
+    <string name="filter_screen_sources_title">Джерела</string>
+
+    <string name="filter_screen_save_btn">Зберегти</string>
+</resources>

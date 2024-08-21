@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="network_error_connectivity">Не вдалося підключитися до інтернету. Перевірте своє з\'єднання.</string>
+    <string name="network_error_empty_result">Дані за вашим запитом не знайдено. Спробуйте пізніше.</string>
+    <string name="network_error_parsing">Виникла проблема під час обробки даних: %1$s</string>
+    <string name="network_error_timeout">Запит зайняв надто багато часу для відповіді. Спробуйте ще раз.</string>
+    <string name="network_error_server">Виникла помилка сервера: %1$s</string>
+    <string name="network_error_unknown">Виникла несподівана помилка. %1$s Спробуйте ще раз пізніше.</string>
+
+    <!--Error Dialog-->
+    <string name="error_dialog_title">Щось пішло не так</string>
+
+    <!--HomeScreen-->
+    <string name="home_screen_language_bts_title">Мова</string>
+    <string name="home_screen_dark_theme_bts_title">Темна тема</string>
+    <string name="home_screen_light_theme_bts_title">Світла тема</string>
+</resources>

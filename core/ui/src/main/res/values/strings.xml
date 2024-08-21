@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--Network errors-->
+    <string name="network_error_connectivity">Unable to connect to the internet. Please check your connection.</string>
+    <string name="network_error_empty_result">No data found for your request. Please try again later.</string>
+    <string name="network_error_parsing">We encountered an issue while processing the data: %1$s</string>
+    <string name="network_error_timeout">The request took too long to respond. Please try again.</string>
+    <string name="network_error_server">A server error occurred: %1$s</string>
+    <string name="network_error_unknown">An unexpected error occurred. %1$s Please try again later.</string>
+
+    <!--Error Dialog-->
+    <string name="error_dialog_title">Something went wrong</string>
+
+    <!--HomeScreen-->
+    <string name="home_screen_language_bts_title">Language</string>
+    <string name="home_screen_dark_theme_bts_title">Dark theme</string>
+    <string name="home_screen_light_theme_bts_title">Light theme</string>
+    <string name="home_screen_toolbar" translatable="false">Material News</string>
+</resources>

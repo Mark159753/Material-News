@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="filter_screen_toolbar">Filter</string>
+    <string name="filter_screen_sort_order_title">Sort order</string>
+    <string name="filter_screen_sort_by_popularity">Popularity</string>
+    <string name="filter_screen_sort_by_relevancy">Relevancy</string>
+    <string name="filter_screen_sort_by_published_at">Published at</string>
+    <string name="filter_screen_sort_lng">Language: %1$s</string>
+
+    <string name="filter_screen_sources_title">Sources</string>
+
+    <string name="filter_screen_save_btn">Save</string>
+</resources>

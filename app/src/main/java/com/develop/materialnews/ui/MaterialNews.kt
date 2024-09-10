@@ -1,8 +1,7 @@
 package com.develop.materialnews.ui
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Snackbar
 import androidx.compose.material3.SnackbarHost
@@ -15,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import com.develop.materialnews.navigation.MaterialNewsNavHost
 import kotlinx.coroutines.launch
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MaterialNews(){
 
@@ -22,7 +22,6 @@ fun MaterialNews(){
     val scope = rememberCoroutineScope()
 
     Scaffold(
-        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         snackbarHost = { SnackbarHost(snackbarHostState){
             Snackbar(
                 snackbarData = it,
@@ -30,10 +29,9 @@ fun MaterialNews(){
                 dismissActionContentColor = Color.White
             )
         } },
-    ) { paddingValues ->
+    ) { _ ->
         Column(
             modifier = Modifier
-                .consumeWindowInsets(paddingValues)
         ) {
             MaterialNewsNavHost(
                 onShowSnackBar = { msg ->

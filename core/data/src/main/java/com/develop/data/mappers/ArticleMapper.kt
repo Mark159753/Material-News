@@ -15,13 +15,13 @@ fun Article.toTopHeaderEntity() = TopHeadersEntity(
     content = content,
     description = description,
     publishedAt = publishedAt,
-    source = source?.toEntity(),
+    source = source?.takeIf { !it.id.isNullOrEmpty() }?.toEntity(),
     title = title,
     urlToImage = urlToImage
 )
 
 fun Source.toEntity() = SourceEmbedded(
-    id = id,
+    id = id!!,
     name = name
 )
 

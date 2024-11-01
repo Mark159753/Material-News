@@ -1,6 +1,7 @@
 package com.develop.ui.util.actions
 
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateOf
 import com.develop.common.result.NetworkError
 import com.develop.network.models.error.ErrorResponse
@@ -11,6 +12,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.receiveAsFlow
 
+@Stable
 interface UIActions {
 
     val actions: Flow<Action>

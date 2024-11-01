@@ -25,14 +25,15 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.develop.filters.R
 import com.develop.filters.ui.state.FilterState
@@ -42,21 +43,21 @@ import com.develop.ui.util.actions.CommonAction
 
 @Composable
 fun FilterRoute(
-    viewModel: FilterViewModel = hiltViewModel(),
+    state: FilterState,
     onShowSnackBar:(String)->Unit,
     onNavBack: () -> Unit
 ){
 
-    if (viewModel.errorDialog.value != null){
+    if (state.errorDialog.value != null){
         ErrorDialog(
-            msg = viewModel.errorDialog.value?.msg?.asString() ?: "",
-            title = viewModel.errorDialog.value?.title?.asString() ?: ""
+            msg = state.errorDialog.value?.msg?.asString() ?: "",
+            title = state.errorDialog.value?.title?.asString() ?: ""
         )
     }
 
     val context = LocalContext.current
 
-    LifeCycleActions(viewModel.actions){ action ->
+    LifeCycleActions(state.actions){ action ->
         when(action){
             CommonAction.NavBack -> onNavBack()
             is CommonAction.ShowSnackBar -> onShowSnackBar(action.msg.asString(context))
@@ -65,8 +66,8 @@ fun FilterRoute(
 
     FilterScreen(
         onNavBack = onNavBack,
-        onSave = viewModel::onSaveChanges,
-        state = viewModel.state
+        onSave = state::onSaveChanges,
+        state = state
     )
 }
 
@@ -162,9 +163,14 @@ private fun FilterScreen(
                 key = { index -> sourcesList[index].id }
             ){ index ->
                 val item = sourcesList[index]
+
+                val isSelected by remember {
+                    derivedStateOf{selectedSources.contains(item.id)}
+                }
+
                 SourceItem(
                     item = item,
-                    isSelected = selectedSources.contains(item.id),
+                    isSelected = isSelected,
                     onClick = { selected ->
                         state.sourceState.onSelect(selected.id)
                     }

@@ -1,10 +1,12 @@
 package com.develop.filters.navigation
 
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.develop.filters.ui.FilterRoute
+import com.develop.filters.ui.FilterViewModel
 import com.develop.ui.navigation.FilterNavigationRoute
 import com.develop.ui.navigation.HomeNavigationRoute
 import com.develop.ui.navigation.SharedAxisDuration
@@ -54,9 +56,13 @@ fun NavGraphBuilder.filterScreen(
             }
         }
     ) {
+
+        val viewModel:FilterViewModel = hiltViewModel()
+
         FilterRoute(
             onNavBack = onNavBack,
-            onShowSnackBar = onShowSnackBar
+            onShowSnackBar = onShowSnackBar,
+            state = viewModel.state
         )
     }
 }

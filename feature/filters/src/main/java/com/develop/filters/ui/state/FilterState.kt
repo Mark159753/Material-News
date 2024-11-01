@@ -3,24 +3,32 @@ package com.develop.filters.ui.state
 import androidx.compose.runtime.Stable
 import com.develop.data.repositories.filter.UserFilterRepository
 import com.develop.data.repositories.source.SourceRepository
+import com.develop.ui.util.actions.CommonAction
+import com.develop.ui.util.actions.UIActions
+import com.develop.ui.util.actions.UIActionsImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.mapNotNull
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 @Stable
-interface FilterState:ChangeState {
+interface FilterState:ChangeState, UIActions {
     val sortByState:SortByState
     val sourceState:SourceState
+
+    fun onSaveChanges()
 }
 
 class FilterStateImpl(
-    userFilterRepository: UserFilterRepository,
+    private val userFilterRepository: UserFilterRepository,
     sourceRepository: SourceRepository,
-    scope:CoroutineScope
+    private val scope:CoroutineScope,
+    uiActions: UIActions = UIActionsImpl()
 ):FilterState,
     ChangeState by ChangeStateImpl(),
-        OnChange
+        OnChange,
+        UIActions by uiActions
 {
 
     private val savedFilters = userFilterRepository
@@ -48,6 +56,16 @@ class FilterStateImpl(
         initSelectedSources = savedSources,
         onChange = this
     )
+
+    override fun onSaveChanges() {
+        scope.launch {
+            userFilterRepository.updatePreferences {
+                setSortOrder(sortBy = sortByState.sortBy.value)
+                setSources(sourceState.selectedSources.value)
+            }
+            sendAction(CommonAction.NavBack)
+        }
+    }
 
     override fun onChange() {
         checkHaveAnyChanges(sourceState, sortByState)

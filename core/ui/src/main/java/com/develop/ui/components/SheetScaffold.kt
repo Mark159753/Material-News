@@ -5,6 +5,7 @@
 package com.develop.ui.components
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.exponentialDecay
 import androidx.compose.ui.unit.Velocity
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
@@ -85,8 +86,9 @@ class SheetScaffoldState(
         initialValue = initPosition,
         positionalThreshold = { distance:Float -> distance * 0.5f },
         velocityThreshold = { with(density) { 100.dp.toPx() } },
-        animationSpec = tween(),
-        confirmValueChange = confirmValueChanged
+        confirmValueChange = confirmValueChanged,
+        decayAnimationSpec = exponentialDecay(),
+        snapAnimationSpec = tween()
         )
 
     internal fun updateAnchors(statusBarPadding:Dp){
@@ -108,29 +110,8 @@ class SheetScaffoldState(
     * if current state is SheetState.Expanded progress will be 1f
     * */
     val progress: Float
-        get() {
-            val isCollapsed = anchoredDraggableState.currentValue == SheetState.Collapsed
-            val isExpanded = anchoredDraggableState.currentValue == SheetState.Expanded
-            val targetIsCollapsed = anchoredDraggableState.targetValue == SheetState.Collapsed
-            val targetIsExpanded = anchoredDraggableState.targetValue == SheetState.Expanded
+        get() = anchoredDraggableState.progress(SheetState.Collapsed, SheetState.Expanded)
 
-            return when {
-                (targetIsCollapsed && isCollapsed) || (targetIsExpanded && isCollapsed) ->
-                    calculateProgress(anchoredDraggableState.progress)
-                (targetIsExpanded && isExpanded) || (targetIsCollapsed && isExpanded) ->
-                    calculateProgress(1f - anchoredDraggableState.progress)
-                else -> 0f
-            }
-        }
-
-    private fun calculateProgress(p: Float): Float {
-        val isTargetAndCurrentTheSame = anchoredDraggableState.currentValue == anchoredDraggableState.targetValue
-        return when {
-            isTargetAndCurrentTheSame && anchoredDraggableState.currentValue == SheetState.Collapsed && anchoredDraggableState.progress == 1f -> 0f
-            isTargetAndCurrentTheSame && anchoredDraggableState.currentValue == SheetState.Expanded && anchoredDraggableState.progress == 1f -> 1f
-            else -> p
-        }
-    }
 
     private val toolbarOffset: Float by derivedStateOf {
         val p1 = ((progress - 0.7f) / (1f - 0.7f)).coerceIn(0f, 1f)

@@ -1,7 +1,6 @@
 package com.develop.home.ui
 
 import androidx.compose.animation.core.animateDpAsState
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -28,7 +27,6 @@ import com.develop.data.models.articles.ArticleModel
 import com.develop.home.ui.states.TopHeaderState
 import com.develop.ui.theme.White
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TopHeadersPager(
     modifier: Modifier = Modifier,
@@ -48,7 +46,7 @@ fun TopHeadersPager(
             key = { index -> items[index]?.url ?: index },
             contentPadding = PaddingValues(horizontal = ScreenOffsets),
             pageSpacing = 16.dp,
-            beyondBoundsPageCount = 3,
+            beyondViewportPageCount = 2
         ) { index ->
             val item = items[index]
 

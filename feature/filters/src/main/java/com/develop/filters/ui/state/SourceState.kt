@@ -1,13 +1,17 @@
 package com.develop.filters.ui.state
 
 import androidx.compose.runtime.Stable
+import com.develop.common.result.Result
 import com.develop.data.models.spurces.SourceModel
+import com.develop.data.repositories.source.SourceRepository
+import com.develop.ui.util.actions.UIActions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
@@ -27,9 +31,17 @@ class SourceStateImpl(
     initSelectedSources:Flow<Set<String>>,
     scope:CoroutineScope,
     private val onChange: OnChange,
+    private val sourceRepository: SourceRepository,
+    private val uiActions: UIActions
 ):SourceState{
 
     override val sources: StateFlow<List<SourceModel>> = initSources
+        .onStart {
+            val response = sourceRepository.fetchSources()
+            if (response is Result.Error){
+                uiActions.handleApiError(response.error)
+            }
+        }
         .stateIn(
             scope = scope,
             initialValue = emptyList(),

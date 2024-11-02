@@ -130,6 +130,7 @@ class SheetScaffoldState(
         get() = anchoredDraggableState.targetValue
 
 
+    @OptIn(ExperimentalFoundationApi::class)
     suspend fun setState(state: SheetState){
         anchoredDraggableState.animateTo(state)
     }

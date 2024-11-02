@@ -54,7 +54,9 @@ class FilterStateImpl(
         initSources = sourceRepository.sources,
         scope = scope,
         initSelectedSources = savedSources,
-        onChange = this
+        onChange = this,
+        sourceRepository = sourceRepository,
+        uiActions = this
     )
 
     override fun onSaveChanges() {

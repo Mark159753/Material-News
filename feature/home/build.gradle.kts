@@ -23,8 +23,12 @@ dependencies {
 
     //Paging 3
     implementation(libs.paging.compose)
+    testImplementation(libs.paging.common.testing)
 
     //Tests
     testImplementation(libs.junit)
     androidTestImplementation(libs.bundles.common.tests)
+
+    testImplementation(project(":core:testing"))
+    androidTestImplementation(project(":core:testing"))
 }

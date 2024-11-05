@@ -2,6 +2,7 @@ package com.develop.data.repositories.filter
 
 import android.content.Context
 import android.util.Log
+import androidx.datastore.core.DataStore
 import com.develop.data.mappers.toModel
 import com.develop.data.mappers.toPreferences
 import com.develop.data.models.filters.FilterPreferencesModel
@@ -15,26 +16,34 @@ import kotlinx.coroutines.flow.map
 import java.io.IOException
 import javax.inject.Inject
 
-class UserFilterRepositoryImpl @Inject constructor(
-    @ApplicationContext
-    private val context: Context
-) : UserFilterRepository {
+class UserFilterRepositoryImpl : UserFilterRepository {
+
+    private val dataStore:DataStore<UserFilterPreferences>
+
+    @Inject constructor(@ApplicationContext context: Context){
+        dataStore = context.userFilterPreferencesStore
+    }
+
+    constructor(dataStore: DataStore<UserFilterPreferences>){
+        this.dataStore = dataStore
+    }
 
 
-    override val filters: Flow<FilterPreferencesModel> = context.userFilterPreferencesStore.data
-        .catch { exception ->
-            if (exception is IOException) {
-                Log.e(TAG, "Error reading sort order preferences.", exception)
-                emit(UserFilterPreferences.getDefaultInstance())
-            } else {
-                throw exception
+    override val filters: Flow<FilterPreferencesModel>
+        get() = dataStore.data
+            .catch { exception ->
+                if (exception is IOException) {
+                    Log.e(TAG, "Error reading sort order preferences.", exception)
+                    emit(UserFilterPreferences.getDefaultInstance())
+                } else {
+                    throw exception
+                }
             }
-        }
-        .map { item -> item.toModel() }
+            .map { item -> item.toModel() }
 
 
     override suspend fun updatePreferences(block: FilterPreferencesScope.() -> Unit) {
-        context.userFilterPreferencesStore.updateData { preferences ->
+        dataStore.updateData { preferences ->
             val b = preferences.toBuilder()
             val scope = FilterPreferencesScopeImpl(b)
             block.invoke(scope)

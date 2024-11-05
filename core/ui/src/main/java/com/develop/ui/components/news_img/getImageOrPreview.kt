@@ -19,8 +19,8 @@ fun getImageOrPreview(
     val context = LocalContext.current
 
     val graphProvider = remember {
-        (context.applicationContext as GraphMetaDataProvider).provideOpenGraphMetaDataProvider()
-    }
+        (context.applicationContext as? GraphMetaDataProvider)?.provideOpenGraphMetaDataProvider()
+    } ?: return null
 
     var metadata:OpenGraphMetaData? by remember {
         mutableStateOf(null)

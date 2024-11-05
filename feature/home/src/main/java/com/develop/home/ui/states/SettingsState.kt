@@ -1,21 +1,19 @@
 package com.develop.home.ui.states
 
 import androidx.compose.runtime.Stable
+import com.develop.common.LanguageHelper
 import com.develop.common.constants.AppLanguage
 import com.develop.local.preferences.AppSettings
-import com.develop.ui.util.LanguageHelper
+import com.develop.ui.util.LanguageHelperImpl
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
 @Stable
 interface SettingsState {
 
-    val isDarkTheme:StateFlow<Boolean?>
-
-    val currentLng:StateFlow<AppLanguage?>
+    val uiState:SettingsUiState
 
     fun toggleIsDarkTheme(isDark:Boolean)
 
@@ -29,21 +27,22 @@ class SettingsStateImpl(
     private val scope: CoroutineScope
 ): SettingsState{
 
-    override val isDarkTheme: StateFlow<Boolean?> = appSettings
-        .isDarkMode
-        .stateIn(
-            scope = scope,
-            initialValue = null,
-            started = SharingStarted.WhileSubscribed(5_000)
-        )
-
-    override val currentLng: StateFlow<AppLanguage?> = appSettings
-        .currentLocale
-        .stateIn(
-            scope = scope,
-            initialValue = null,
-            started = SharingStarted.WhileSubscribed(5_000)
-        )
+    override val uiState: SettingsUiState = SettingsUiState(
+        isDarkTheme = appSettings
+            .isDarkMode
+            .stateIn(
+                scope = scope,
+                initialValue = null,
+                started = SharingStarted.WhileSubscribed(5_000)
+            ),
+        currentLng = appSettings
+            .currentLocale
+            .stateIn(
+                scope = scope,
+                initialValue = null,
+                started = SharingStarted.WhileSubscribed(5_000)
+            )
+    )
 
     override fun toggleIsDarkTheme(isDark:Boolean) {
         scope.launch {

@@ -31,33 +31,46 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.develop.data.models.filters.SortBy
+import com.develop.data.models.spurces.SourceModel
+import com.develop.data.models.spurces.generateDummyModel
 import com.develop.filters.R
-import com.develop.filters.ui.state.FilterState
+import com.develop.filters.ui.state.FilterScreenUIState
 import com.develop.ui.components.LifeCycleActions
 import com.develop.ui.dialogs.error.ErrorDialog
+import com.develop.ui.theme.MaterialNewsTheme
 import com.develop.ui.util.actions.CommonAction
+import com.develop.ui.util.actions.UIActions
+import com.develop.ui.util.actions.UIActionsImpl
+import kotlinx.coroutines.flow.MutableStateFlow
 
 @Composable
 fun FilterRoute(
-    state: FilterState,
-    onShowSnackBar:(String)->Unit,
-    onNavBack: () -> Unit
+    uiActions: UIActions = UIActionsImpl(),
+    filterState:FilterScreenUIState = FilterScreenUIState(),
+    onShowSnackBar:(String)->Unit = {},
+    onNavBack: () -> Unit = {},
+    onSave:()->Unit = {},
+    onSelectSource:(SourceModel)->Unit = {},
+    onSetSortOrder:(SortBy)->Unit = {},
 ){
 
-    if (state.errorDialog.value != null){
+    if (uiActions.errorDialog.value != null){
         ErrorDialog(
-            msg = state.errorDialog.value?.msg?.asString() ?: "",
-            title = state.errorDialog.value?.title?.asString() ?: ""
+            msg = uiActions.errorDialog.value?.msg?.asString() ?: "",
+            title = uiActions.errorDialog.value?.title?.asString() ?: ""
         )
     }
 
     val context = LocalContext.current
 
-    LifeCycleActions(state.actions){ action ->
+    LifeCycleActions(uiActions.actions){ action ->
         when(action){
             CommonAction.NavBack -> onNavBack()
             is CommonAction.ShowSnackBar -> onShowSnackBar(action.msg.asString(context))
@@ -66,8 +79,10 @@ fun FilterRoute(
 
     FilterScreen(
         onNavBack = onNavBack,
-        onSave = state::onSaveChanges,
-        state = state
+        onSave = onSave,
+        onSelectSource = onSelectSource,
+        onSetSortOrder = onSetSortOrder,
+        state = filterState
     )
 }
 
@@ -75,16 +90,19 @@ fun FilterRoute(
 private fun FilterScreen(
     onNavBack:()->Unit = {},
     onSave:()->Unit = {},
-    state: FilterState,
+    onSelectSource:(SourceModel)->Unit = {},
+    onSetSortOrder:(SortBy)->Unit = {},
+    state: FilterScreenUIState = FilterScreenUIState(),
 ){
 
     val isChanged by state.anyChanges.collectAsStateWithLifecycle()
-    val sourcesList by state.sourceState.sources.collectAsStateWithLifecycle()
+    val sourcesList by state.sourcesList.collectAsStateWithLifecycle()
+    val sortOrder by state.sortBy.collectAsStateWithLifecycle()
 
     val systemPaddings = WindowInsets.systemBars.asPaddingValues()
     val bottomPaddings = systemPaddings.calculateBottomPadding()
 
-    val selectedSources by state.sourceState.selectedSources.collectAsStateWithLifecycle()
+    val selectedSources by state.selectedSources.collectAsStateWithLifecycle()
 
     Column(
         modifier = Modifier
@@ -119,7 +137,9 @@ private fun FilterScreen(
 
             TextButton(
                 onClick = onSave,
-                enabled = isChanged
+                enabled = isChanged,
+                modifier = Modifier
+                    .testTag(stringResource(id = R.string.filter_screen_save_btn))
             ) {
                 Text(text = stringResource(id = R.string.filter_screen_save_btn))
             }
@@ -143,7 +163,8 @@ private fun FilterScreen(
             item(span = StaggeredGridItemSpan.FullLine) {
                 Column {
                     SortBySection(
-                        state = state.sortByState
+                        selected = sortOrder,
+                        onSetSortOrder = onSetSortOrder
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
@@ -171,12 +192,24 @@ private fun FilterScreen(
                 SourceItem(
                     item = item,
                     isSelected = isSelected,
-                    onClick = { selected ->
-                        state.sourceState.onSelect(selected.id)
-                    }
+                    onClick = onSelectSource
                 )
             }
         }
 
+    }
+}
+
+@Composable
+@Preview
+private fun FilterScreenPreview(){
+    MaterialNewsTheme {
+        FilterScreen(
+            state = FilterScreenUIState(
+                sourcesList = MutableStateFlow(
+                    List(5){ generateDummyModel(it) }
+                )
+            )
+        )
     }
 }

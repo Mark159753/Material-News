@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -47,7 +48,8 @@ fun NewsItem(
     }
 
     Card(
-        modifier = modifier,
+        modifier = modifier
+            .testTag("news_item_${item.url}"),
         onClick = { if (item != null) onClick(item) },
         shape = cardShape,
         colors = CardDefaults.cardColors(

@@ -31,24 +31,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.develop.data.models.filters.SortBy
 import com.develop.filters.R
-import com.develop.filters.ui.state.SortByState
 
 @Composable
 fun SortBySection(
     modifier: Modifier = Modifier,
-    state: SortByState
+    selected: SortBy,
+    onSetSortOrder:(SortBy)->Unit = {}
 ){
 
     val entries = remember {
         SortBy.entries
     }
-
-    val selected by state.sortBy.collectAsStateWithLifecycle()
 
     Column(
         modifier = modifier
@@ -78,9 +77,10 @@ fun SortBySection(
                     item = item,
                     isSelected = item == selected,
                     modifier = Modifier
+                        .semantics { contentDescription = item.name }
                         .fillMaxHeight()
                         .weight(1f),
-                    onClick = state::onSetSort
+                    onClick = onSetSortOrder
                 )
                 if (index != entries.size - 1){
                     VerticalDivider(

@@ -3,8 +3,8 @@ package com.develop.materialnews.ui
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.develop.local.preferences.AppSettings
-import com.develop.ui.util.LanguageHelper
+import com.develop.local.preferences.AppSettingsImpl
+import com.develop.ui.util.LanguageHelperImpl
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -12,8 +12,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    appSettings: AppSettings,
-    private val languageHelper: LanguageHelper
+    appSettings: AppSettingsImpl,
+    private val languageHelper: LanguageHelperImpl
 ):ViewModel() {
 
     val isSystemInDark = appSettings

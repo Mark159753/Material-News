@@ -1,10 +1,12 @@
 package com.develop.home.navigation
 
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
 import androidx.navigation.compose.composable
 import com.develop.home.ui.HomeScreen
+import com.develop.home.ui.HomeViewModel
 import com.develop.ui.navigation.FilterNavigationRoute
 import com.develop.ui.navigation.HomeNavigationRoute
 import com.develop.ui.navigation.SharedAxisDuration
@@ -56,11 +58,19 @@ fun NavGraphBuilder.homeScreen(
             }
         }
     ) {
+
+        val viewModel:HomeViewModel = hiltViewModel()
+
         HomeScreen(
             onShowSnackBar = onShowSnackBar,
             onNavToWebView = onNavToWebView,
             onNavToFilter = onNavToFilter,
-            onNavBackStack = onNavBack
+            onNavBackStack = onNavBack,
+            settingsUiState = viewModel.settingsState.uiState,
+            uiActions = viewModel,
+            articlesSate = viewModel.articlesSate,
+            onChangeLng = viewModel.settingsState::changeLng,
+            onToggleDarkTheme = viewModel.settingsState::toggleIsDarkTheme
         )
     }
 }

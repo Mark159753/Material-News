@@ -19,8 +19,8 @@ data class SourceModel(
     val name:String
 )
 
-fun generateFakeArticleModel() = ArticleModel(
-    url = "http://www.smith-cooley.com/",
+fun generateFakeArticleModel(index:Int = 0) = ArticleModel(
+    url = "http://www.smith-cooley.com/$index",
     author = "Rick Orr",
     content = "Spring wrong teacher. Leave want vote record. Attorney yet minute act degree.",
     description = "Reduce support half such push. ; widojdw jjd ;d ;jwd dw huhw pj opijoip djoipdjw oipjds iopjdsij iodj poijds iojds iojd spisdj poidsj poids phpds ",

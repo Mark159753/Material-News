@@ -1,8 +1,9 @@
 package com.develop.ui.di
 
 import android.content.Context
-import com.develop.local.preferences.AppSettings
-import com.develop.ui.util.LanguageHelper
+import com.develop.common.LanguageHelper
+import com.develop.local.preferences.AppSettingsImpl
+import com.develop.ui.util.LanguageHelperImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,9 +19,9 @@ object UiModule {
     @Singleton
     fun provideLanguageHelper(
         @ApplicationContext context: Context,
-        appSettings: AppSettings,
+        appSettings: AppSettingsImpl,
         ): LanguageHelper {
-        return LanguageHelper(
+        return LanguageHelperImpl(
             appSettings = appSettings,
             appContext = context
         )

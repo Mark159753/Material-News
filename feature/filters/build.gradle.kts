@@ -15,6 +15,8 @@ dependencies {
     implementation(project(":core:data"))
     implementation(project(":core:local"))
     implementation(project(":core:ui"))
+    testImplementation(project(":core:testing"))
+    androidTestImplementation(project(":core:testing"))
 
     //Tests
     testImplementation(libs.junit)

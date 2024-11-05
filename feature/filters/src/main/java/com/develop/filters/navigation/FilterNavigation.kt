@@ -58,11 +58,16 @@ fun NavGraphBuilder.filterScreen(
     ) {
 
         val viewModel:FilterViewModel = hiltViewModel()
+        val state = viewModel.state
 
         FilterRoute(
             onNavBack = onNavBack,
             onShowSnackBar = onShowSnackBar,
-            state = viewModel.state
+            uiActions = state,
+            filterState = viewModel.filterState,
+            onSelectSource = state.sourceState::onSelect,
+            onSave = state::onSaveChanges,
+            onSetSortOrder = state.sortByState::onSetSort,
         )
     }
 }

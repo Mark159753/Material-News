@@ -22,6 +22,9 @@ internal fun Project.configureKotlinAndroid(
 
         compileSdk = libs.findVersion("android.compileSdk").get().requiredVersion.toInt()
 
+        //For Robolectric
+        testOptions.unitTests.isIncludeAndroidResources = true
+
         defaultConfig {
             minSdk = libs.findVersion("android.minSdk").get().requiredVersion.toInt()
             vectorDrawables {
@@ -45,6 +48,15 @@ internal fun Project.configureKotlinAndroid(
         add("implementation", libs.findLibrary("hilt.navigation.compose").get())
         add("implementation", libs.findLibrary("androidx.appcompat").get())
         add("coreLibraryDesugaring", libs.findLibrary("android.desugarJdkLibs").get())
+
+        add("testImplementation", libs.findLibrary("mockito.core").get())
+        add("testImplementation", libs.findLibrary("mockito.kotlin").get())
+        add("testImplementation", libs.findLibrary("mockk").get())
+        add("testImplementation", libs.findLibrary("kotlinx.coroutines.test").get())
+        add("testImplementation", libs.findLibrary("robolectric").get())
+        add("testImplementation", libs.findLibrary("androidx.test.core").get())
+        add("androidTestImplementation", libs.findLibrary("kotlinx.coroutines.test").get())
+        add("androidTestImplementation", libs.findLibrary("dexmaker.mockito").get())
     }
 }
 

@@ -21,19 +21,20 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.develop.data.models.articles.ArticleModel
-import com.develop.home.ui.states.TopHeaderState
+import com.develop.home.ui.states.ArticlesState
 import com.develop.ui.theme.White
 
 @Composable
 fun TopHeadersPager(
     modifier: Modifier = Modifier,
-    state: TopHeaderState,
+    state: ArticlesState,
     onClick:(ArticleModel)->Unit,
 ){
-    val items by state.items.collectAsStateWithLifecycle()
+    val items by state.topHeaderState.collectAsStateWithLifecycle()
 
     val pagerState = rememberPagerState(pageCount = { items.size })
 
@@ -52,6 +53,7 @@ fun TopHeadersPager(
 
             HeaderNewsItemView(
                 modifier = Modifier
+                    .testTag(item?.url ?: "NULL")
                     .fillMaxWidth()
                     .height(112.dp),
                 item = item,

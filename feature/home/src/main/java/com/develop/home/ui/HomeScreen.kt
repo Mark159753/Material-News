@@ -46,6 +46,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -53,12 +54,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.develop.common.constants.AppLanguage
-import com.develop.home.ui.states.SettingsState
+import com.develop.home.ui.states.ArticlesState
+import com.develop.home.ui.states.SettingsUiState
 import com.develop.ui.R
 import com.develop.ui.components.LifeCycleActions
 import com.develop.ui.components.SettingsButton
@@ -69,29 +70,34 @@ import com.develop.ui.dialogs.error.ErrorDialog
 import com.develop.ui.theme.MaterialNewsTheme
 import com.develop.ui.theme.isDarkTheme
 import com.develop.ui.util.actions.CommonAction
+import com.develop.ui.util.actions.UIActions
+import com.develop.ui.util.actions.UIActionsImpl
 import com.develop.ui.util.listRoundedCorner
 import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = hiltViewModel(),
+    uiActions: UIActions = UIActionsImpl(),
     onShowSnackBar:(String)->Unit = {},
     onNavToWebView:(link:String)->Unit = {},
     onNavToFilter:()->Unit = {},
     onNavBackStack:()->Unit = {},
+    articlesSate:ArticlesState = ArticlesState(),
+    settingsUiState: SettingsUiState = SettingsUiState(),
+    onChangeLng:(AppLanguage)->Unit = {},
+    onToggleDarkTheme:(Boolean)->Unit = {},
 ){
-
-    if (viewModel.errorDialog.value != null){
+    if (uiActions.errorDialog.value != null){
         ErrorDialog(
-            msg = viewModel.errorDialog.value?.msg?.asString() ?: "",
-            title = viewModel.errorDialog.value?.title?.asString() ?: ""
+            msg = uiActions.errorDialog.value?.msg?.asString() ?: "",
+            title = uiActions.errorDialog.value?.title?.asString() ?: ""
         )
     }
 
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-    val articles = viewModel.articlesPaging.collectAsLazyPagingItems()
+    val articles = articlesSate.articlesPaging.collectAsLazyPagingItems()
 
     val isRefreshing by remember {
         derivedStateOf { articles.loadState.refresh is LoadState.Loading }
@@ -123,7 +129,7 @@ fun HomeScreen(
         }
     }
 
-    LifeCycleActions(viewModel.actions){ action ->
+    LifeCycleActions(uiActions.actions){ action ->
         when(action){
             CommonAction.NavBack -> onNavBack()
             is CommonAction.ShowSnackBar -> onShowSnackBar(action.msg.asString(context))
@@ -187,13 +193,15 @@ fun HomeScreen(
                     modifier = Modifier
                         .padding(horizontal = ScreenOffsets)
                         .fillMaxWidth(),
-                    state = viewModel.settingsState
+                    state = settingsUiState,
+                    onChangeLng = onChangeLng,
+                    onToggleDarkTheme = onToggleDarkTheme
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
 
                 TopHeadersPager(
-                    state = viewModel.topHeaderState,
+                    state = articlesSate,
                     onClick = { onNavToWebView(it.url) }
                 )
             }
@@ -227,7 +235,7 @@ fun HomeScreen(
                         NewsItem(
                             item = item,
                             itemPosition = listRoundedCorner(index, articles.itemCount),
-                            onClick = { onNavToWebView(it.url) }
+                            onClick = { onNavToWebView(it.url) },
                         )
                     }
                 }
@@ -289,7 +297,9 @@ fun HomeScreen(
 @Composable
 private fun SettingsButtons(
     modifier: Modifier = Modifier,
-    state: SettingsState
+    state: SettingsUiState = SettingsUiState(),
+    onChangeLng:(AppLanguage)->Unit = {},
+    onToggleDarkTheme:(Boolean)->Unit = {},
 ){
 
     val localIsDarkTheme by state.isDarkTheme.collectAsStateWithLifecycle()
@@ -310,13 +320,14 @@ private fun SettingsButtons(
             iconRes = R.drawable.language_ic,
             haveOptions = true,
             modifier = Modifier
+                .testTag(stringResource(id = R.string.home_screen_language_bts_title))
                 .height(60.dp)
                 .weight(1f),
             menu = {
                 LanguagePopupOptions(
                     expanded = showLngOptions,
                     onDismissRequest = { showLngOptions = showLngOptions.not() },
-                    onClick = state::changeLng,
+                    onClick = onChangeLng,
                     currentLocale = currentLng ?: AppLanguage.EN
                 )
             },
@@ -329,9 +340,10 @@ private fun SettingsButtons(
                 iconRes = R.drawable.dark_theme_ic,
                 isActive = isDarkTheme,
                 onClick = {
-                    state.toggleIsDarkTheme(!isDarkTheme)
+                    onToggleDarkTheme(!isDarkTheme)
                 },
                 modifier = Modifier
+                    .testTag(stringResource(id = R.string.home_screen_dark_theme_bts_title))
                     .height(60.dp)
                     .weight(1f)
             )

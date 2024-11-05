@@ -22,7 +22,7 @@ interface SourceState: ChangesComparator {
 
     val selectedSources:StateFlow<Set<String>>
 
-    fun onSelect(id:String)
+    fun onSelect(model:SourceModel)
 
 }
 
@@ -63,11 +63,11 @@ class SourceStateImpl(
         }
     }
 
-    override fun onSelect(id: String) {
-        if (_selectedSources.value.contains(id)){
-            _selectedSources.value = _selectedSources.value.minusElement(id)
+    override fun onSelect(model: SourceModel) {
+        if (_selectedSources.value.contains(model.id)){
+            _selectedSources.value = _selectedSources.value.minusElement(model.id)
         }else{
-            _selectedSources.value = _selectedSources.value.plusElement(id)
+            _selectedSources.value = _selectedSources.value.plusElement(model.id)
         }
         onChange.onChange()
     }

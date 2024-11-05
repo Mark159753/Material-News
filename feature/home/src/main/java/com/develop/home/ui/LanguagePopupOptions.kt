@@ -11,8 +11,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.DpOffset
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import com.develop.common.constants.AppLanguage
 
 @Composable
@@ -39,7 +39,11 @@ internal fun LanguagePopupOptions(
                 } else null,
                 onClick = {
                     onClick(lng)
-                }
+                },
+                modifier = Modifier
+                    .semantics {
+                        contentDescription = "lngItem ${lng.name}"
+                    }
             )
         }
     }
